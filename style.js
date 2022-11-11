@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         marginVertical: 10,
         borderWidth: 1,
-        borderColor: 'white'
+        borderColor: 'white',
+        zIndex: 1
     },
     buttonText: {
         fontSize: 20,
@@ -57,7 +58,12 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     formInputContainer: {
-        marginBottom: 70
+        position: 'absolute',
+        marginBottom: 70,
+        ...StyleSheet.absoluteFill,
+        zIndex: -1,
+        elevation: (Platform.OS === 'android') ? -1 : 0,
+        justifyContent: 'center'
     },
     closeButtonContainer: {
         height: 40,
