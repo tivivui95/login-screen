@@ -10,12 +10,13 @@ import React, { useState } from 'react';
 import { StyleSheet, Dimensions, View, Text, TextInput, Pressable } from 'react-native';
 import styles from './style';
 import Svg, { Image, Ellipse, ClipPath} from 'react-native-svg';
-import Animated, { useSharedValue, useAnimatedStyle, interpolate, withTiming, withDelay } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, interpolate, withTiming, withDelay, runOnJS, withSequence, withSpring } from 'react-native-reanimated';
 import { transform } from '@babel/core';
 
 export default function App() {
   const { height, width } = Dimensions.get('window');
   const imagePosition = useSharedValue(1);
+  const formButtonScale = useSharedValue(1);
   const [isRegistering, setIsRegistering] = useState(false);
 
   const imageAnimatedStyle = useAnimatedStyle(() => {
@@ -47,10 +48,17 @@ export default function App() {
     }
   })
 
+  const formButtonAnimationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: formButtonScale.value}]
+    }
+  })
+
   const loginHandler = () => {
     imagePosition.value = 0
     if (isRegistering) {
       setIsRegistering(false);
+      runOnJS(setIsRegistering)(false);
     }
   }
 
@@ -58,11 +66,12 @@ export default function App() {
     imagePosition.value = 0
     if (!isRegistering) {
       setIsRegistering(true);
+      runOnJS(setIsRegistering)(true);
     }
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={styles.container}>
 
         
 
@@ -94,9 +103,9 @@ export default function App() {
             <TextInput placeholder='Full name' placeholderTextColor="black" style={styles.textInput} />
           )} 
           <TextInput placeholder='Password' placeholderTextColor="black" style={styles.textInput} />
-          <View style={styles.formButton}>
-            <Text style={styles.buttonText}>{isRegistering ? "REGISTER" : "LOGIN"}</Text>
-          </View>
+          <Animated.View style={[styles.formButton, formButtonAnimationStyle]}>
+            <Text onPress={() => formButtonScale.value = withSequence(withSpring(1.5), withSpring(1))} style={styles.buttonText}>{isRegistering ? "REGISTER" : "LOGIN"}</Text>
+          </Animated.View>
         </Animated.View>
 
         <Animated.View style={[StyleSheet.absoluteFill, buttonsAnimatedStyle]}>
@@ -112,6 +121,6 @@ export default function App() {
         </Animated.View>
 
       </View>
-    </View>
+    </Animated.View>
   );
 }
