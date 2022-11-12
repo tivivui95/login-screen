@@ -119,7 +119,7 @@ export default function App() {
             <Text style={styles.buttonText}>REGISTER</Text>
           </Pressable>
         </Animated.View>
-
+        
       </View>
     </Animated.View>
   );
